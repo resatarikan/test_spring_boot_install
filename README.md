@@ -33,3 +33,47 @@ for certs:
 sudo apt install certbot python3-certbot-nginx
 sudo certbot --nginx -d your_domain
 ```
+
+
+```
+sudo apt install openssl
+
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+
+sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+
+sudo nano /etc/nginx/sites-available/your_domain
+```
+
+
+
+```
+server {
+    listen 443 ssl;
+    server_name your_domain;
+
+    ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+    ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
+    # Other security settings
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # Your other Nginx settings...
+}
+
+server {
+    listen 80;
+    server_name your_domain;
+    return 301 https://$host$request_uri;
+}
+```
+
+
+```bash
+sudo systemctl restart nginx
+```
+
+
