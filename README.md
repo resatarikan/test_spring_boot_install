@@ -1,5 +1,5 @@
 # test_spring_boot_install
-
+```
 server {
     listen 80;
     server_name your_domain_or_IP;
@@ -12,3 +12,4 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+```
