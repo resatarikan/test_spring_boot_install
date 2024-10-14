@@ -46,23 +46,30 @@ sudo nano /etc/nginx/sites-available/your_domain
 ```
 server {
     listen 443 ssl;
-    server_name your_domain;
+    server_name 116.203.105.177;
 
     ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
     ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
     ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
-    # Other security settings
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
     ssl_ciphers HIGH:!aNULL:!MD5;
 
-    # Your other Nginx settings...
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
 }
 
 server {
     listen 80;
-    server_name your_domain;
+    server_name 116.203.105.17;
+
+    # Redirect all HTTP traffic to HTTPS
     return 301 https://$host$request_uri;
 }
 ```
